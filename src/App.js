@@ -1,24 +1,26 @@
 import './App.css';
 import axios from 'axios';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 const githubAccessToken = process.env.REACT_APP_GITHUB_PAT;
 function App() {
 
   const [userList, setUserList] = useState([]);
 
-  async function getUserList(){
-    try{
-      const users = await axios.get("https://api.github.com/users",{
-        headers: {
-          Authorization: `Bearer ${githubAccessToken}`
-        }
-      });
-      setUserList(users.data);
-    } catch (error) {
-      console.log(error);
+  useEffect(()=>{
+    async function getUserList(){
+      try{
+        const users = await axios.get("https://api.github.com/users",{
+          headers: {
+            Authorization: `Bearer ${githubAccessToken}`
+          }
+        });
+        setUserList(users.data);
+      } catch (error) {
+        console.log(error);
+      }
     }
-  }
-  getUserList();
+    getUserList();
+  },[]);
 
   function UserDataRow(){
     return userList.map((element)=> {
