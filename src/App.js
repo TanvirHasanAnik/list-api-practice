@@ -22,16 +22,12 @@ function App() {
     getUserList();
   },[]);
 
-  function UserDataRow(){
-    return userList.map((element)=> {
-        return (
-            <tr key={element.id}>
-                <td>{element.id}</td>
-                <td>{element.login}</td>
-                <td>{element.url}</td>
-            </tr>
-        )
-    })
+  function SearchButton(){
+    if(userList.length > 0){
+      return <input type='text' placeholder='Search user name'/>
+    } else {
+      return null
+    }  
   }
 
   function UserListTable(){
@@ -44,8 +40,15 @@ function App() {
                     <th>Profile url</th>
                 </tr>
             </thead>
-            <tbody>
-                <UserDataRow/>
+            <tbody>{
+              userList.map((element) => {
+                return <tr key={element.id}>
+                    <td>{element.id}</td>
+                    <td>{element.login}</td>
+                    <td>{element.url}</td>
+                </tr>
+              })
+              }
             </tbody>
         </table>
     )
@@ -53,6 +56,7 @@ function App() {
   return (
     <div className="App">
       <main>
+        <SearchButton/>
         <UserListTable/>
       </main>
     </div>
