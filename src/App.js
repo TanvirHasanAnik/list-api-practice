@@ -4,7 +4,9 @@ import { useState,useEffect } from 'react';
 const githubAccessToken = process.env.REACT_APP_GITHUB_PAT;
 function App() {
 
+  const [userListAll, setUserListAll] = useState([]);
   const [userList, setUserList] = useState([]);
+  const [searchInputValue,setSearchInputValue] = useState("");
 
   useEffect(()=>{
     async function getUserList(){
@@ -14,6 +16,7 @@ function App() {
             Authorization: `Bearer ${githubAccessToken}`
           }
         });
+        setUserListAll(users.data);
         setUserList(users.data);
       } catch (error) {
         console.log(error);
@@ -23,11 +26,13 @@ function App() {
   },[]);
 
   function SearchButton(){
-    if(userList.length > 0){
-      return <input type='text' placeholder='Search user name'/>
-    } else {
-      return null
-    }  
+    function handleChange(inputFieldEvent){
+      const currentText = inputFieldEvent.target.value;
+      setSearchInputValue(currentText);
+      const updatedUserList = userListAll.filter((user)=>{return user.login.toLowerCase().includes(currentText.trim().toLowerCase());});
+      setUserList(updatedUserList);
+    }
+    return <input type='text' placeholder='Search user name' value={searchInputValue} onChange={handleChange}/>
   }
 
   function UserListTable(){
