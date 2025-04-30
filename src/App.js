@@ -1,27 +1,57 @@
 import './App.css';
 import axios from 'axios';
+import { useState } from 'react';
 const githubAccessToken = process.env.REACT_APP_GITHUB_PAT;
 function App() {
-  function GetUsers(){
-    async function handleClick(){
-      try{
-        //process.env.
-        const users = await axios.get("https://api.github.com/users",{
-          headers: {
-            Authorization: `Bearer ${githubAccessToken}`
-          }
-        });
-        console.log(users);
-      } catch (error) {
 
-      }
+  const [userList, setUserList] = useState([]);
+
+  async function getUserList(){
+    try{
+      const users = await axios.get("https://api.github.com/users",{
+        headers: {
+          Authorization: `Bearer ${githubAccessToken}`
+        }
+      });
+      setUserList(users.data);
+    } catch (error) {
+      console.log(error);
     }
-    return <button onClick={handleClick}>User List</button>
+  }
+  getUserList();
+
+  function UserDataRow(){
+    return userList.map((element)=> {
+        return (
+            <tr key={element.id}>
+                <td>{element.id}</td>
+                <td>{element.login}</td>
+                <td>{element.url}</td>
+            </tr>
+        )
+    })
+  }
+
+  function UserListTable(){
+    return (
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>User Name</th>
+                    <th>Profile url</th>
+                </tr>
+            </thead>
+            <tbody>
+                <UserDataRow/>
+            </tbody>
+        </table>
+    )
   }
   return (
     <div className="App">
       <main>
-        <GetUsers/>
+        <UserListTable/>
       </main>
     </div>
   );
