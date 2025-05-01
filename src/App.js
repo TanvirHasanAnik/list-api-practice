@@ -2,6 +2,19 @@ import './App.css';
 import axios from 'axios';
 import { useState,useEffect } from 'react';
 const githubAccessToken = process.env.REACT_APP_GITHUB_PAT;
+
+
+
+function SearchButton({setUserList,userListAll,setSearchInputValue,searchInputValue}){
+  function handleChange(inputFieldEvent){
+    const currentText = inputFieldEvent.target.value;
+    setSearchInputValue(currentText);
+    const updatedUserList = userListAll.filter((user)=>{return user.login.toLowerCase().includes(currentText.trim().toLowerCase());});
+    setUserList(updatedUserList);
+  }
+  return <input type='text' placeholder='Search user name' value={searchInputValue} onChange={handleChange}/>
+}
+
 function App() {
 
   const [userListAll, setUserListAll] = useState([]);
@@ -24,16 +37,6 @@ function App() {
     }
     getUserList();
   },[]);
-
-  function SearchButton(){
-    function handleChange(inputFieldEvent){
-      const currentText = inputFieldEvent.target.value;
-      setSearchInputValue(currentText);
-      const updatedUserList = userListAll.filter((user)=>{return user.login.toLowerCase().includes(currentText.trim().toLowerCase());});
-      setUserList(updatedUserList);
-    }
-    return <input type='text' placeholder='Search user name' value={searchInputValue} onChange={handleChange}/>
-  }
 
   function UserListTable(){
     return (
@@ -61,7 +64,12 @@ function App() {
   return (
     <div className="App">
       <main>
-        <SearchButton/>
+        <SearchButton 
+        setUserList = {setUserList}
+        userListAll={userListAll}
+        setSearchInputValue={setSearchInputValue}
+        searchInputValue={searchInputValue}
+        />
         <UserListTable/>
       </main>
     </div>
