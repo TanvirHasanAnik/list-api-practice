@@ -25,7 +25,7 @@ function App() {
       
         linkHeadersArray.forEach(link => {
           const [urlPart, relPart] = link.split('; ');
-          const url = urlPart.slice(1, -1); // remove < and >
+          const url = urlPart.slice(1, urlPart.length - 1); 
           const rel = relPart.replace('rel="', '').replace('"', '');
           linkHeadersMap[rel] = url;
         });
