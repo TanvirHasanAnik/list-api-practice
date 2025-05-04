@@ -36,10 +36,8 @@ function App() {
 
       const linkHeader = users.headers.link;
       const linkParsed = parseLinkHeader(linkHeader);
-      console.log(linkParsed.next);
+      console.log(linkParsed);
       setNextPageUrl(linkParsed.next);
-
-
     } catch (error) {
       console.log(error);
     }
@@ -73,9 +71,13 @@ function App() {
     function handleNextClick(){
       getUserList(nextPageUrl);
     }
+
+    function handleFirstClick(){
+      getUserList("https://api.github.com/users");
+    }
     return(
       <div>
-        <button>Previous</button>
+        <button onClick={handleFirstClick}>First</button>
         <button onClick={handleNextClick}>Next</button>
       </div>
     )
