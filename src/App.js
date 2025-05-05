@@ -42,6 +42,7 @@ function App() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [searchWord, setSearchWord] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (searchWord === '') {
@@ -53,6 +54,7 @@ function App() {
 
   async function getUserList(url) {
     try {
+      setLoading(true);
       const users = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${githubAccessToken}`
@@ -77,13 +79,16 @@ function App() {
       const linkHeader = users.headers.link;
       const linkParsed = parseLinkHeader(linkHeader);
       setNextPageUrl(linkParsed.next);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   }
 
   async function searchUsers(query) {
     try {
+      setLoading(true);
       const users = await axios.get(`https://api.github.com/search/users?q=${query}+in:login`, {
         headers: {
           Authorization: `Bearer ${githubAccessToken}`
@@ -91,8 +96,10 @@ function App() {
       });
 
       setUserList(users.data.items);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   }
 
@@ -169,7 +176,7 @@ function App() {
 
         <section className="user-table-section">
           <h2>User List</h2>
-          <UserListTable />
+          {loading ? <p>Loading...</p> : <UserListTable />}
         </section>
 
         <section className="pagination-controls">
