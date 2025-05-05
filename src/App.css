@@ -108,8 +108,50 @@ button:hover {
 .modal-content {
   background: white;
   padding: 20px;
-  width: 90%;
-  max-width: 300px;
+  width: 60%;
   border-radius: 4px;
 }
 
+.modal_content_top{
+  display: flex;
+  justify-content: space-between;
+}
+
+.user_avatar_name_wrapper{
+  display: flex;
+}
+
+.user_avatar{
+  height: 120px;
+  width: 120px;
+}
+
+.user_name_id_wrapper{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  padding-left: 24px;
+}
+
+.user_name{
+  padding: 0;
+  margin: 0;
+}
+
+.url_wrapper{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.modal_content_right{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.user_type, .user_view_type, .user_is_admin {
+  margin: 0;
+  padding-bottom: 8px;
+}

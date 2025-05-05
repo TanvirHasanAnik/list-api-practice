@@ -9,9 +9,27 @@ function Modal({ user, onClose }) {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h2>{user.login}</h2>
-        <p><strong>ID:</strong> {user.id}</p>
-        <p><strong>Profile URL:</strong> <a href={user.html_url} target="_blank" rel="noopener noreferrer">{user.html_url}</a></p>
+        <div className='modal_content_top'>
+          <div className='modal_content_left'>
+            <div className='user_avatar_name_wrapper'>
+              <img className='user_avatar' src={user.avatar_url} alt='user_avatar'/>
+              <div className='user_name_id_wrapper'>
+                <h2 className='user_name'>{user.login}</h2>
+                <p className='user_id'><strong>ID:</strong> {user.id}</p>
+              </div>
+            </div>
+            <div className='url_wrapper'>
+              <p><strong>Profile URL:</strong> <a href={user.html_url} target="_blank" rel="noopener noreferrer">{user.html_url}</a></p>
+              <p><strong>Repos URL:</strong> <a href={user.repos_url} target="_blank" rel="noopener noreferrer">{user.repos_url}</a></p>
+            </div>
+
+          </div>
+          <div className="modal_content_right">
+            <p className='user_type'><strong>Type:</strong> {user.type}</p>
+            <p className='user_view_type'><strong>User view type:</strong> {user.user_view_type}</p>
+            <p className='user_is_admin'><strong>Site admin:</strong> {user.site_admin ? "Yes" : "No"}</p>
+          </div>
+        </div>
         <button onClick={onClose}>Close</button>
       </div>
     </div>
@@ -23,15 +41,15 @@ function App() {
   const [nextPageUrl, setNextPageUrl] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(''); // State for search term
+  const [searchWord, setSearchWord] = useState('');
 
   useEffect(() => {
-    if (searchTerm === '') {
+    if (searchWord === '') {
       getUserList("https://api.github.com/users");
     } else {
-      searchUsers(searchTerm);
+      searchUsers(searchWord);
     }
-  }, [searchTerm]);
+  }, [searchWord]);
 
   async function getUserList(url) {
     try {
@@ -72,14 +90,14 @@ function App() {
         }
       });
 
-      setUserList(users.data.items); // Use the items array from search results
+      setUserList(users.data.items);
     } catch (error) {
       console.log(error);
     }
   }
 
   function handleSearchChange(e) {
-    setSearchTerm(e.target.value);
+    setSearchWord(e.target.value);
   }
 
   function UserListTable() {
@@ -143,7 +161,7 @@ function App() {
         <section className="search-section">
           <input
             type="text"
-            value={searchTerm}
+            value={searchWord}
             onChange={handleSearchChange}
             placeholder="Search GitHub Users"
           />
