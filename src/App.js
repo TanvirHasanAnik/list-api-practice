@@ -89,9 +89,12 @@ function App() {
   async function searchUsers(query) {
     try {
       setLoading(true);
-      const users = await axios.get(`https://api.github.com/search/users?q=${query}+in:login`, {
+      const users = await axios.get('https://api.github.com/search/users', {
         headers: {
           Authorization: `Bearer ${githubAccessToken}`
+        },
+        params: {
+          q: `${query} in:login`
         }
       });
 
