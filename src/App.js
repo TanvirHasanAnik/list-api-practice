@@ -48,7 +48,11 @@ function App() {
     if (searchWord === '') {
       getUserList("https://api.github.com/users");
     } else {
-      searchUsers(searchWord);
+      const timeOut = setTimeout(() => {
+        searchUsers(searchWord);
+      }, 1000);
+    
+      return () => clearTimeout(timeOut);
     }
   }, [searchWord]);
 
@@ -107,7 +111,7 @@ function App() {
   }
 
   function handleSearchChange(e) {
-    setSearchWord(e.target.value);
+        setSearchWord(e.target.value)
   }
 
   function UserListTable() {
