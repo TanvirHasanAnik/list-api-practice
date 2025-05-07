@@ -36,8 +36,11 @@ function Modal({ user, onClose }) {
   );
 }
 
+let userListArray = []
+
 function App() {
   const [userList, setUserList] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
   const [nextPageUrl, setNextPageUrl] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -78,10 +81,14 @@ function App() {
       
         return linkHeadersMap;
       }
-      setUserList(users.data);
+      console.log(users.data)
+      
+      userListArray.push(users.data)
+      console.log(userListArray)
 
       const linkHeader = users.headers.link;
       const linkParsed = parseLinkHeader(linkHeader);
+      setCurrentPage(userListArray.length - 1)
       setNextPageUrl(linkParsed.next);
       setLoading(false);
     } catch (error) {
@@ -101,8 +108,7 @@ function App() {
           q: `${query} in:login`
         }
       });
-
-      setUserList(users.data.items);
+      setUserList(users.data.items)
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -112,6 +118,21 @@ function App() {
 
   function handleSearchChange(e) {
         setSearchWord(e.target.value)
+  }
+
+  function TableDataRow({element,handleViewClick}) {
+    return (
+      <tr key={element.id} className='table_data_row'>
+        <td className='user_data_id'>{element.id}</td>
+        <td className='user_data_name'>{element.login}</td>
+        <td className='user_data_profile_url'>{element.html_url}</td>
+        <td className='user_data_action_button'>
+          <button onClick={() => handleViewClick(element)}>
+            View
+          </button>
+        </td>
+      </tr>
+    )
   }
 
   function UserListTable() {
@@ -130,36 +151,42 @@ function App() {
           </tr>
         </thead>
         <tbody className='user_list_tbody'>
-          {userList.map((element) => {
-            return (
-              <tr key={element.id} className='table_data_row'>
-                <td className='user_data_id'>{element.id}</td>
-                <td className='user_data_name'>{element.login}</td>
-                <td className='user_data_profile_url'>{element.html_url}</td>
-                <td className='user_data_action_button'>
-                  <button onClick={() => handleViewClick(element)}>
-                    View
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
+          { searchWord === "" ?
+          userListArray.length > 0 &&  userListArray[currentPage].map((element) => {
+                return (
+                  <TableDataRow element={element} handleViewClick={handleViewClick}/>
+                );
+              }) :
+              userList.map((element) => {
+                return (
+                  <TableDataRow element={element} handleViewClick={handleViewClick}/>
+                );
+              })
+          }
         </tbody>
       </table>
     );
   }
 
   function Pagination() {
-    function handleNextClick() {
-      getUserList(nextPageUrl);
+
+    function handlePreviousClick(){
+      if(currentPage > 0){
+        setCurrentPage(currentPage - 1)
+      }
     }
 
     function handleFirstClick() {
-      getUserList("https://api.github.com/users");
+      setCurrentPage(0)
+    }
+
+    function handleNextClick() {
+      (currentPage < (userListArray.length - 1)) ? setCurrentPage(currentPage + 1) : getUserList(nextPageUrl);
     }
     return (
       <div className='pagination_wrapper'>
         <button onClick={handleFirstClick} className='first_page_button'>First</button>
+        <button onClick={handlePreviousClick} className='previous_page_button' disabled={currentPage === 0}>Previous</button>
         <button onClick={handleNextClick} className='next_page_button'>Next</button>
       </div>
     );
