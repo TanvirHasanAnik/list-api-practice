@@ -48,15 +48,19 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (searchWord === '') {
-      getUserList("https://api.github.com/users");
-    } else {
-      const timeOut = setTimeout(() => {
-        searchUsers(searchWord);
-      }, 1000);
-    
-      return () => clearTimeout(timeOut);
-    }
+    getUserList("https://api.github.com/users");
+  },[])
+
+  useEffect(() => {
+    const timeOut = setTimeout(() => {
+      if (searchWord.trim() === '') {
+        setUserList([]); 
+      } else {
+        searchUsers(searchWord.trim());
+      }
+    }, 1000);
+
+    return () => clearTimeout(timeOut);
   }, [searchWord]);
 
   async function getUserList(url) {
@@ -188,6 +192,7 @@ function App() {
         <button onClick={handleFirstClick} className='first_page_button'>First</button>
         <button onClick={handlePreviousClick} className='previous_page_button' disabled={currentPage === 0}>Previous</button>
         <button onClick={handleNextClick} className='next_page_button'>Next</button>
+        <span>{`Current Page: ${currentPage+1}`}</span>
       </div>
     );
   }
@@ -210,7 +215,9 @@ function App() {
 
         <section className="user-table-section">
           <h2>User List</h2>
-          {loading ? <p>Loading...</p> : <UserListTable />}
+          <div className='user_list_table_wrapper'>
+            {loading ? <p>Loading...</p> : <UserListTable />}
+          </div>
         </section>
 
         <section className="pagination-controls">
